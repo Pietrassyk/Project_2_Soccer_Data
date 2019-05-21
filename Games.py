@@ -1,15 +1,16 @@
 class Game():
-    def __init__(self,ID,home_team,away_team,date,location,score_home,score_away):
+    def __init__(self,ID,home_team,away_team,season,date,score_home,score_away):
         self.ID = ID
         self.home_team = home_team
         self.away_team = away_team
+        self.season = season
         self.date = date
-        self.location = location
+        self.location = "get location"
         self.score_home = score_home
         self.score_away = score_away
         self.winner = self.winner()
         self.looser = self.looser()
-        self.weather = self.weather()
+        self.is_rain = self.is_rain()
 
     def winner(self):
         if self.score_away > self.score_home:
@@ -27,5 +28,6 @@ class Game():
         else:
             return "Tie"
 
-    def weather(self):
+    def is_rain(self):
+
         pass
