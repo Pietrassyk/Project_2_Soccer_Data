@@ -1,3 +1,7 @@
+import requests
+import re
+import datetime
+
 class WeatherGetter:
     def __init__(self):
         # API key from Dark Sky
