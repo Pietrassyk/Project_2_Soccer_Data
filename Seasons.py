@@ -1,9 +1,17 @@
+#Libraries
 import pandas as pd
 import tpclean.tpclean as tp
+import os
+
+#Locals Files
 import Teams
 import Games
 
 #TODO Checkout Methods for inheritable and noninheritable Functions
+
+####################
+#######CLASS########
+####################
 
 class Season():
     teams_list = []
@@ -12,17 +20,20 @@ class Season():
 
     def __init__(self,year,divisions = [], database = "database.sqlite"):
         self.year = year
+        self.figure_directory = "/Figures"
 
         #establish connection to database and run querry
         tp.sql_connect(database)
         divs = "','".join(divisions)
         df = tp.sql(f""" SELECT * FROM FlatView_Advanced {f" WHERE Div IN('{str(divs)}')" if divisions else ''} 
-      AND Season == {year}""")
+                    AND Season == {year}""")
+        #df = df.drop_duplicates("Match_ID")
         self.data = df
 
         #populate Season
         self.fill_teams()
         self.fill_games()
+        self.get_statistics()
 
 
     def get_team(self,team_to_check):
@@ -49,9 +60,25 @@ class Season():
             date = "/".join([date_list[1], date_list[2], date_list[0]])
             score_home = df.FTHG[i]
             score_away = df.FTAG[i]
-            self.games_list.append(Games.Game(ID,home_team,away_team,season,date,score_home,score_away))
+            ID_list = [game.ID for game in self.games_list]
+            if ID in ID_list:
+                continue
+            else:
+                self.games_list.append(Games.Game(ID,home_team,away_team,season,date,score_home,score_away))
 
+    def get_statistics(self):
+        for team in self.teams_list:
+            team.get_win_percentage()
 
+    def create_image_directory(self):
+        # define the name of the directory to be created
+        path = self.figure_directory
+        try:
+            os.mkdir(path)
+        except OSError:
+            print("Creation of the directory %s failed" % path)
+        else:
+            print("Successfully created the directory %s " % path)
 
 
 
