@@ -13,6 +13,8 @@ import Games
 #######CLASS########
 ####################
 
+
+
 class Season():
     teams_list = []
     games_list = []
@@ -20,14 +22,13 @@ class Season():
 
     def __init__(self,year,divisions = [], database = "database.sqlite"):
         self.year = year
-        self.figure_directory = "/Figures"
+        self.figure_directory = f"./Figures/{self.year}/"
 
         #establish connection to database and run querry
         tp.sql_connect(database)
         divs = "','".join(divisions)
         df = tp.sql(f""" SELECT * FROM FlatView_Advanced {f" WHERE Div IN('{str(divs)}')" if divisions else ''} 
                     AND Season == {year}""")
-        #df = df.drop_duplicates("Match_ID")
         self.data = df
 
         #populate Season
@@ -72,13 +73,19 @@ class Season():
 
     def create_image_directory(self):
         # define the name of the directory to be created
-        path = self.figure_directory
+        dirname = os.path.dirname(__file__)
+        filename = "."+self.figure_directory
         try:
-            os.mkdir(path)
+            os.mkdir(filename)
         except OSError:
-            print("Creation of the directory %s failed" % path)
+            print("Creation of the directory %s failed" % filename)
         else:
-            print("Successfully created the directory %s " % path)
+            print("Successfully created the directory %s " % filename)
+
+    def print_plots(self):
+        for team in self.teams_list:
+            team.plot(save= True, dir= self.figure_directory)
+
 
 
 

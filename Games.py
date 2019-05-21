@@ -1,3 +1,4 @@
+import weathergetter as wg
 class Game():
     def __init__(self,ID,home_team,away_team,season,date,score_home,score_away):
         self.ID = ID
@@ -5,17 +6,17 @@ class Game():
         self.away_team = away_team #Team Object
         self.season = season
         self.date = date
-        self.location = "get location"
+        self.location = home_team.stadium_location
         self.score_home = score_home
         self.score_away = score_away
         self.winner = self.winner()
         self.looser = self.looser()
-        self.is_rain = self.is_rain()
+        self.is_rain = self.get_rain()
 
         #Set Records
-        self.home_team.goal_counter += score_home
+        self.home_team.goal_counter += self.score_home
         self.home_team.num_of_games_played += 1
-        self.away_team.goal_counter += score_away
+        self.away_team.goal_counter += self.score_away
         self.away_team.num_of_games_played += 1
 
         if self.winner:
@@ -49,6 +50,6 @@ class Game():
         else:
             return None
 
-    def is_rain(self):
-
-        pass
+    def get_rain(self):
+        return "du da"
+        #return wg.WeatherGetter().is_rain(self.date , self.home_team.name + " stadium", False)
