@@ -35,6 +35,7 @@ class Season():
         self.fill_teams()
         self.fill_games()
         self.get_statistics()
+        self.print_plots()
 
 
     def get_team(self,team_to_check):
@@ -70,6 +71,7 @@ class Season():
     def get_statistics(self):
         for team in self.teams_list:
             team.get_win_percentage()
+            team.get_rain_win_percentage()
 
     def create_image_directory(self):
         # define the name of the directory to be created
