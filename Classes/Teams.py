@@ -1,4 +1,9 @@
 import matplotlib.pyplot as plt
+
+####################
+#######CLASS########
+####################
+
 class Team():
     """Class Contains Team Statistics derived from listening on the Creation of Game instences"""
     def __init__(self,ID,name):

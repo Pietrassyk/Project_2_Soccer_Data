@@ -1,13 +1,9 @@
 #Libraries
-import pandas as pd
 import tpclean.tpclean as tp
 import os
 
 #Locals Files
-import Teams
-import Games
-
-#TODO Checkout Methods for inheritable and noninheritable Functions
+from Classes import Games, Teams
 
 ####################
 #######CLASS########
@@ -16,6 +12,8 @@ import Games
 
 
 class Season():
+    """Contains Summary information for a Season. Will instantiate Teams and Games. Will compute statisics
+    Container for Teams and Games Objects"""
     teams_list = []
     games_list = []
     locations_list = []
@@ -39,18 +37,19 @@ class Season():
 
 
     def get_team(self,team_to_check):
-        #print(self.teams_list[0:4])
+        """Inputs a Teamname as a STR and returns the according team object"""
         for team in self.teams_list:
-            #print(f"{team.name} == {team_to_check}")
             if(team.name == team_to_check):
                 return team
-        return "error"
+        return "Team not found"
 
     def fill_teams(self):
+        """Instantiates Team Objects for every Team in self.data"""
         df = self.data
         self.teams_list = [Teams.Team(i, df.HomeTeam.unique()[i]) for i in range(len(df.HomeTeam.unique()))]
 
     def fill_games(self):
+        """Instantiates Game Objects for every Game in self.data"""
         self.games_list = []
         df = self.data[["Match_ID", "HomeTeam", "AwayTeam", "Season", "Date", "FTHG", "FTAG"]]
         for i in range(len(df)):
@@ -62,18 +61,22 @@ class Season():
             date = "/".join([date_list[1], date_list[2], date_list[0]])
             score_home = df.FTHG[i]
             score_away = df.FTAG[i]
+
+            #check for Duplicates and skip them
             ID_list = [game.ID for game in self.games_list]
             if ID in ID_list:
                 continue
             else:
-                self.games_list.append(Games.Game(ID,home_team,away_team,season,date,score_home,score_away))
+                self.games_list.append(Games.Game(ID, home_team, away_team, season, date, score_home, score_away))
 
     def get_statistics(self):
+        """Computes win_percentage and rain_win_percentage for every Team"""
         for team in self.teams_list:
             team.get_win_percentage()
             team.get_rain_win_percentage()
 
     def create_image_directory(self):
+        """Creates Folder to store plots in"""
         # define the name of the directory to be created
         dirname = os.path.dirname(__file__)
         filename = "."+self.figure_directory
@@ -85,6 +88,7 @@ class Season():
             print("Successfully created the directory %s " % filename)
 
     def print_plots(self):
+        """Saves plots to Folder """
         for team in self.teams_list:
             team.plot(save= True, dir= self.figure_directory)
 

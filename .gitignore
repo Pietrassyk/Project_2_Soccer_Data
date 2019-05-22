@@ -2,6 +2,8 @@ api_keys.py
 /.idea
 */.idea/*
 *.idea
+*/Private
+/Private
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
